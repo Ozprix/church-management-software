@@ -37,8 +37,20 @@ class UserFactory extends Factory
      */
     public function unverified(): static
     {
-        return $this->state(fn (array $attributes) => [
+        return $this->state(fn(array $attributes) => [
             'email_verified_at' => null,
+        ]);
+    }
+
+    /**
+     * Indicate that the model is an admin.
+     */
+    public function admin()
+    {
+        $role = \App\Models\Role::factory()->admin()->create();
+        return $this->state([
+            'is_admin' => true,
+            'role_id' => $role->id,
         ]);
     }
 }

@@ -54,6 +54,15 @@ return [
 
     'url' => env('APP_URL', 'http://localhost'),
 
+    // Organization branding
+    'organization_name' => env('ORG_NAME', env('APP_NAME', 'Church Management')),
+    'organization_address' => env('ORG_ADDRESS', ''),
+    'organization_phone' => env('ORG_PHONE', ''),
+    'organization_email' => env('ORG_EMAIL', env('MAIL_FROM_ADDRESS', '')),
+    'organization_website' => env('ORG_WEBSITE', env('APP_URL', '')),
+    'organization_tax_id' => env('ORG_TAX_ID', ''),
+    'organization_logo' => env('ORG_LOGO', 'images/logo.png'),
+
     /*
     |--------------------------------------------------------------------------
     | Application Timezone

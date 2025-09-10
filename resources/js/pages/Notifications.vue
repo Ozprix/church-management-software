@@ -1,0 +1,749 @@
+<template>
+  <div class="notifications-page">
+    <div class="container mx-auto px-4 py-6">
+      <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-6">
+        <h1 class="text-2xl font-bold text-neutral-800 dark:text-white mb-4 md:mb-0">
+          Notifications
+        </h1>
+        <div class="flex space-x-3">
+          <Button 
+            v-if="unreadCount > 0"
+            @click="markAllAsRead" 
+            variant="secondary"
+            size="sm"
+          >
+            Mark all as read
+          </Button>
+          <Button 
+            @click="openSettings" 
+            variant="outline"
+            size="sm"
+          >
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+            </svg>
+            Settings
+          </Button>
+        </div>
+      </div>
+      
+      <!-- Filters -->
+      <div class="bg-white dark:bg-neutral-800 rounded-lg shadow-sm border border-neutral-200 dark:border-neutral-700 p-4 mb-6">
+        <div class="flex flex-col md:flex-row md:items-center space-y-4 md:space-y-0 md:space-x-6">
+          <!-- Status Filter -->
+          <div class="flex-1">
+            <label for="status-filter" class="block text-sm font-medium text-neutral-700 dark:text-neutral-300 mb-1">
+              Status
+            </label>
+            <select 
+              id="status-filter" 
+              v-model="filters.status" 
+              class="w-full rounded-md border border-neutral-300 dark:border-neutral-600 py-2 px-3 bg-white dark:bg-neutral-800 text-neutral-800 dark:text-white shadow-sm focus:outline-none focus:ring-primary-500 focus:border-primary-500"
+            >
+              <option value="all">All Notifications</option>
+              <option value="unread">Unread Only</option>
+              <option value="read">Read Only</option>
+            </select>
+          </div>
+          
+          <!-- Category Filter -->
+          <div class="flex-1">
+            <label for="category-filter" class="block text-sm font-medium text-neutral-700 dark:text-neutral-300 mb-1">
+              Category
+            </label>
+            <select 
+              id="category-filter" 
+              v-model="filters.category" 
+              class="w-full rounded-md border border-neutral-300 dark:border-neutral-600 py-2 px-3 bg-white dark:bg-neutral-800 text-neutral-800 dark:text-white shadow-sm focus:outline-none focus:ring-primary-500 focus:border-primary-500"
+            >
+              <option value="all">All Categories</option>
+              <option value="members">Members</option>
+              <option value="events">Events</option>
+              <option value="groups">Groups</option>
+              <option value="donations">Donations</option>
+              <option value="system">System</option>
+            </select>
+          </div>
+          
+          <!-- Date Filter -->
+          <div class="flex-1">
+            <label for="date-filter" class="block text-sm font-medium text-neutral-700 dark:text-neutral-300 mb-1">
+              Time Period
+            </label>
+            <select 
+              id="date-filter" 
+              v-model="filters.timeframe" 
+              class="w-full rounded-md border border-neutral-300 dark:border-neutral-600 py-2 px-3 bg-white dark:bg-neutral-800 text-neutral-800 dark:text-white shadow-sm focus:outline-none focus:ring-primary-500 focus:border-primary-500"
+            >
+              <option value="all">All Time</option>
+              <option value="today">Today</option>
+              <option value="week">This Week</option>
+              <option value="month">This Month</option>
+            </select>
+          </div>
+          
+          <!-- Search -->
+          <div class="flex-1">
+            <label for="search-notifications" class="block text-sm font-medium text-neutral-700 dark:text-neutral-300 mb-1">
+              Search
+            </label>
+            <div class="relative">
+              <input 
+                id="search-notifications" 
+                v-model="filters.search" 
+                type="text" 
+                placeholder="Search notifications..." 
+                class="w-full rounded-md border border-neutral-300 dark:border-neutral-600 py-2 pl-10 pr-3 bg-white dark:bg-neutral-800 text-neutral-800 dark:text-white shadow-sm focus:outline-none focus:ring-primary-500 focus:border-primary-500"
+              >
+              <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-neutral-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                </svg>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Notification List -->
+      <div class="bg-white dark:bg-neutral-800 rounded-lg shadow-sm border border-neutral-200 dark:border-neutral-700 overflow-hidden">
+        <div v-if="filteredNotifications.length === 0" class="p-8 text-center">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-16 w-16 mx-auto text-neutral-400 dark:text-neutral-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
+          </svg>
+          <h3 class="mt-4 text-lg font-medium text-neutral-800 dark:text-white">No notifications found</h3>
+          <p class="mt-2 text-neutral-600 dark:text-neutral-400">
+            {{ getEmptyStateMessage() }}
+          </p>
+        </div>
+        
+        <div v-else>
+          <div class="overflow-x-auto">
+            <table class="min-w-full divide-y divide-neutral-200 dark:divide-neutral-700">
+              <thead class="bg-neutral-50 dark:bg-neutral-900">
+                <tr>
+                  <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-neutral-500 dark:text-neutral-400 uppercase tracking-wider">
+                    Status
+                  </th>
+                  <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-neutral-500 dark:text-neutral-400 uppercase tracking-wider">
+                    Notification
+                  </th>
+                  <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-neutral-500 dark:text-neutral-400 uppercase tracking-wider">
+                    Category
+                  </th>
+                  <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-neutral-500 dark:text-neutral-400 uppercase tracking-wider">
+                    Date
+                  </th>
+                  <th scope="col" class="px-6 py-3 text-right text-xs font-medium text-neutral-500 dark:text-neutral-400 uppercase tracking-wider">
+                    Actions
+                  </th>
+                </tr>
+              </thead>
+              <tbody class="bg-white dark:bg-neutral-800 divide-y divide-neutral-200 dark:divide-neutral-700">
+                <tr 
+                  v-for="notification in filteredNotifications" 
+                  :key="notification.id"
+                  :class="{ 'bg-primary-50 dark:bg-primary-900/10': !notification.read }"
+                >
+                  <!-- Status -->
+                  <td class="px-6 py-4 whitespace-nowrap">
+                    <span 
+                      class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium"
+                      :class="notification.read ? 'bg-neutral-100 text-neutral-800 dark:bg-neutral-700 dark:text-neutral-300' : 'bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-300'"
+                    >
+                      {{ notification.read ? 'Read' : 'Unread' }}
+                    </span>
+                  </td>
+                  
+                  <!-- Notification Content -->
+                  <td class="px-6 py-4">
+                    <div class="flex items-start">
+                      <div class="flex-shrink-0 h-10 w-10 rounded-full bg-primary-100 dark:bg-primary-900 flex items-center justify-center text-primary-600 dark:text-primary-400">
+                        <svg v-if="notification.category === 'members'" xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                        </svg>
+                        <svg v-else-if="notification.category === 'events'" xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                        </svg>
+                        <svg v-else-if="notification.category === 'groups'" xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
+                        </svg>
+                        <svg v-else-if="notification.category === 'donations'" xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                        </svg>
+                        <svg v-else xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                        </svg>
+                      </div>
+                      <div class="ml-4">
+                        <div class="text-sm font-medium text-neutral-900 dark:text-white">
+                          {{ notification.title }}
+                        </div>
+                        <div class="text-sm text-neutral-500 dark:text-neutral-400">
+                          {{ notification.message }}
+                        </div>
+                      </div>
+                    </div>
+                  </td>
+                  
+                  <!-- Category -->
+                  <td class="px-6 py-4 whitespace-nowrap">
+                    <span 
+                      class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium"
+                      :class="getCategoryBadgeClass(notification.category)"
+                    >
+                      {{ getCategoryName(notification.category) }}
+                    </span>
+                  </td>
+                  
+                  <!-- Date -->
+                  <td class="px-6 py-4 whitespace-nowrap text-sm text-neutral-500 dark:text-neutral-400">
+                    <div>{{ formatDate(notification.timestamp) }}</div>
+                    <div class="text-xs">{{ formatTimeAgo(notification.timestamp) }}</div>
+                  </td>
+                  
+                  <!-- Actions -->
+                  <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                    <div class="flex justify-end space-x-2">
+                      <button 
+                        v-if="!notification.read"
+                        @click="markAsRead(notification.id)" 
+                        class="text-primary-600 hover:text-primary-900 dark:text-primary-400 dark:hover:text-primary-300"
+                      >
+                        Mark as read
+                      </button>
+                      <button 
+                        v-if="notification.link"
+                        @click="navigateTo(notification)" 
+                        class="text-primary-600 hover:text-primary-900 dark:text-primary-400 dark:hover:text-primary-300"
+                      >
+                        View
+                      </button>
+                      <button 
+                        @click="removeNotification(notification.id)" 
+                        class="text-red-600 hover:text-red-900 dark:text-red-400 dark:hover:text-red-300"
+                      >
+                        Delete
+                      </button>
+                    </div>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          
+          <!-- Pagination -->
+          <div class="bg-white dark:bg-neutral-800 px-4 py-3 flex items-center justify-between border-t border-neutral-200 dark:border-neutral-700 sm:px-6">
+            <div class="hidden sm:flex-1 sm:flex sm:items-center sm:justify-between">
+              <div>
+                <p class="text-sm text-neutral-700 dark:text-neutral-300">
+                  Showing <span class="font-medium">{{ paginationStart }}</span> to <span class="font-medium">{{ paginationEnd }}</span> of <span class="font-medium">{{ filteredNotifications.length }}</span> notifications
+                </p>
+              </div>
+              <div>
+                <nav class="relative z-0 inline-flex rounded-md shadow-sm -space-x-px" aria-label="Pagination">
+                  <button
+                    @click="prevPage"
+                    :disabled="currentPage === 1"
+                    class="relative inline-flex items-center px-2 py-2 rounded-l-md border border-neutral-300 dark:border-neutral-600 bg-white dark:bg-neutral-800 text-sm font-medium text-neutral-500 dark:text-neutral-400 hover:bg-neutral-50 dark:hover:bg-neutral-700 disabled:opacity-50 disabled:cursor-not-allowed"
+                  >
+                    <span class="sr-only">Previous</span>
+                    <svg class="h-5 w-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+                      <path fill-rule="evenodd" d="M12.707 5.293a1 1 0 010 1.414L9.414 10l3.293 3.293a1 1 0 01-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z" clip-rule="evenodd" />
+                    </svg>
+                  </button>
+                  <button
+                    v-for="page in totalPages"
+                    :key="page"
+                    @click="goToPage(page)"
+                    :class="[
+                      page === currentPage ? 'z-10 bg-primary-50 dark:bg-primary-900 border-primary-500 dark:border-primary-500 text-primary-600 dark:text-primary-400' : 'bg-white dark:bg-neutral-800 border-neutral-300 dark:border-neutral-600 text-neutral-500 dark:text-neutral-400 hover:bg-neutral-50 dark:hover:bg-neutral-700',
+                      'relative inline-flex items-center px-4 py-2 border text-sm font-medium'
+                    ]"
+                  >
+                    {{ page }}
+                  </button>
+                  <button
+                    @click="nextPage"
+                    :disabled="currentPage === totalPages"
+                    class="relative inline-flex items-center px-2 py-2 rounded-r-md border border-neutral-300 dark:border-neutral-600 bg-white dark:bg-neutral-800 text-sm font-medium text-neutral-500 dark:text-neutral-400 hover:bg-neutral-50 dark:hover:bg-neutral-700 disabled:opacity-50 disabled:cursor-not-allowed"
+                  >
+                    <span class="sr-only">Next</span>
+                    <svg class="h-5 w-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+                      <path fill-rule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clip-rule="evenodd" />
+                    </svg>
+                  </button>
+                </nav>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Settings Modal -->
+    <Modal 
+      v-if="showSettings" 
+      title="Notification Settings" 
+      @close="showSettings = false"
+    >
+      <div class="space-y-6">
+        <!-- Notification Methods -->
+        <div>
+          <h3 class="text-lg font-medium text-neutral-800 dark:text-white mb-3">Notification Methods</h3>
+          <div class="space-y-2">
+            <div class="flex items-center justify-between">
+              <label for="email-notifications" class="text-neutral-700 dark:text-neutral-300">
+                Email Notifications
+              </label>
+              <Toggle 
+                id="email-notifications" 
+                v-model="settings.email" 
+                @update:modelValue="updateSettings"
+              />
+            </div>
+            <div class="flex items-center justify-between">
+              <label for="browser-notifications" class="text-neutral-700 dark:text-neutral-300">
+                Browser Notifications
+              </label>
+              <Toggle 
+                id="browser-notifications" 
+                v-model="settings.browser" 
+                @update:modelValue="updateSettings"
+              />
+            </div>
+            <div class="flex items-center justify-between">
+              <label for="desktop-notifications" class="text-neutral-700 dark:text-neutral-300">
+                Desktop Notifications
+              </label>
+              <Toggle 
+                id="desktop-notifications" 
+                v-model="settings.desktop" 
+                @update:modelValue="updateSettings"
+              />
+            </div>
+            <div class="flex items-center justify-between">
+              <label for="mobile-notifications" class="text-neutral-700 dark:text-neutral-300">
+                Mobile Push Notifications
+              </label>
+              <Toggle 
+                id="mobile-notifications" 
+                v-model="settings.mobile" 
+                @update:modelValue="updateSettings"
+              />
+            </div>
+          </div>
+        </div>
+        
+        <!-- Notification Categories -->
+        <div>
+          <h3 class="text-lg font-medium text-neutral-800 dark:text-white mb-3">Notification Categories</h3>
+          <div class="space-y-2">
+            <div class="flex items-center justify-between">
+              <label for="members-notifications" class="text-neutral-700 dark:text-neutral-300">
+                Member Updates
+              </label>
+              <Toggle 
+                id="members-notifications" 
+                v-model="settings.categories.members" 
+                @update:modelValue="updateSettings"
+              />
+            </div>
+            <div class="flex items-center justify-between">
+              <label for="events-notifications" class="text-neutral-700 dark:text-neutral-300">
+                Event Reminders
+              </label>
+              <Toggle 
+                id="events-notifications" 
+                v-model="settings.categories.events" 
+                @update:modelValue="updateSettings"
+              />
+            </div>
+            <div class="flex items-center justify-between">
+              <label for="groups-notifications" class="text-neutral-700 dark:text-neutral-300">
+                Group Activities
+              </label>
+              <Toggle 
+                id="groups-notifications" 
+                v-model="settings.categories.groups" 
+                @update:modelValue="updateSettings"
+              />
+            </div>
+            <div class="flex items-center justify-between">
+              <label for="donations-notifications" class="text-neutral-700 dark:text-neutral-300">
+                Donation Updates
+              </label>
+              <Toggle 
+                id="donations-notifications" 
+                v-model="settings.categories.donations" 
+                @update:modelValue="updateSettings"
+              />
+            </div>
+            <div class="flex items-center justify-between">
+              <label for="system-notifications" class="text-neutral-700 dark:text-neutral-300">
+                System Notifications
+              </label>
+              <Toggle 
+                id="system-notifications" 
+                v-model="settings.categories.system" 
+                @update:modelValue="updateSettings"
+              />
+            </div>
+          </div>
+        </div>
+        
+        <!-- Do Not Disturb -->
+        <div>
+          <div class="flex items-center justify-between mb-3">
+            <h3 class="text-lg font-medium text-neutral-800 dark:text-white">Do Not Disturb</h3>
+            <Toggle 
+              id="do-not-disturb" 
+              v-model="settings.doNotDisturb.enabled" 
+              @update:modelValue="updateSettings"
+            />
+          </div>
+          
+          <div v-if="settings.doNotDisturb.enabled" class="grid grid-cols-2 gap-4">
+            <div>
+              <label for="dnd-start" class="block text-sm text-neutral-700 dark:text-neutral-300 mb-1">
+                Start Time
+              </label>
+              <input 
+                id="dnd-start" 
+                v-model="settings.doNotDisturb.startTime" 
+                type="time" 
+                class="w-full px-3 py-2 border border-neutral-300 dark:border-neutral-700 rounded-md shadow-sm focus:outline-none focus:ring-primary-500 focus:border-primary-500 dark:bg-neutral-800 dark:text-white"
+                @change="updateSettings"
+              >
+            </div>
+            <div>
+              <label for="dnd-end" class="block text-sm text-neutral-700 dark:text-neutral-300 mb-1">
+                End Time
+              </label>
+              <input 
+                id="dnd-end" 
+                v-model="settings.doNotDisturb.endTime" 
+                type="time" 
+                class="w-full px-3 py-2 border border-neutral-300 dark:border-neutral-700 rounded-md shadow-sm focus:outline-none focus:ring-primary-500 focus:border-primary-500 dark:bg-neutral-800 dark:text-white"
+                @change="updateSettings"
+              >
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <template #footer>
+        <div class="flex justify-end space-x-3">
+          <Button @click="showSettings = false" variant="outline">Cancel</Button>
+          <Button @click="saveSettings" variant="primary">Save Settings</Button>
+        </div>
+      </template>
+    </Modal>
+  </div>
+</template>
+<script setup>
+import { ref, computed, onMounted, watch } from 'vue';
+import { useRouter } from 'vue-router';
+import { useNotificationStore } from '../stores/notifications';
+import notificationService from '../services/notificationService';
+import Modal from '../components/ui/Modal.vue';
+import Button from '../components/ui/Button.vue';
+import Toggle from '../components/ui/Toggle.vue';
+
+const router = useRouter();
+const notificationStore = useNotificationStore();
+
+// State
+const showSettings = ref(false);
+const settings = ref({ ...notificationStore.settings });
+const currentPage = ref(1);
+const itemsPerPage = ref(10);
+const filters = ref({
+  status: 'all',
+  category: 'all',
+  timeframe: 'all',
+  search: ''
+});
+
+// Computed properties
+const unreadCount = computed(() => notificationStore.unreadCount);
+
+const filteredNotifications = computed(() => {
+  let notifications = [...notificationStore.notifications];
+  
+  // Filter by status
+  if (filters.value.status === 'unread') {
+    notifications = notifications.filter(n => !n.read);
+  } else if (filters.value.status === 'read') {
+    notifications = notifications.filter(n => n.read);
+  }
+  
+  // Filter by category
+  if (filters.value.category !== 'all') {
+    notifications = notifications.filter(n => n.category === filters.value.category);
+  }
+  
+  // Filter by timeframe
+  if (filters.value.timeframe !== 'all') {
+    const now = new Date();
+    let cutoffDate;
+    
+    if (filters.value.timeframe === 'today') {
+      cutoffDate = new Date(now.setHours(0, 0, 0, 0));
+    } else if (filters.value.timeframe === 'week') {
+      cutoffDate = new Date(now);
+      cutoffDate.setDate(cutoffDate.getDate() - 7);
+    } else if (filters.value.timeframe === 'month') {
+      cutoffDate = new Date(now);
+      cutoffDate.setMonth(cutoffDate.getMonth() - 1);
+    }
+    
+    notifications = notifications.filter(n => new Date(n.timestamp) >= cutoffDate);
+  }
+  
+  // Filter by search
+  if (filters.value.search.trim() !== '') {
+    const searchTerm = filters.value.search.toLowerCase();
+    notifications = notifications.filter(n => 
+      n.title.toLowerCase().includes(searchTerm) || 
+      n.message.toLowerCase().includes(searchTerm)
+    );
+  }
+  
+  return notifications;
+});
+
+const paginatedNotifications = computed(() => {
+  const start = (currentPage.value - 1) * itemsPerPage.value;
+  const end = start + itemsPerPage.value;
+  return filteredNotifications.value.slice(start, end);
+});
+
+const totalPages = computed(() => {
+  return Math.ceil(filteredNotifications.value.length / itemsPerPage.value) || 1;
+});
+
+const paginationStart = computed(() => {
+  return (currentPage.value - 1) * itemsPerPage.value + 1;
+});
+
+const paginationEnd = computed(() => {
+  return Math.min(currentPage.value * itemsPerPage.value, filteredNotifications.value.length);
+});
+
+// Methods
+function markAsRead(id) {
+  notificationService.markAsRead(id);
+}
+
+function markAllAsRead() {
+  notificationService.markAllAsRead();
+}
+
+function removeNotification(id) {
+  notificationService.remove(id);
+}
+
+function navigateTo(notification) {
+  if (notification.link) {
+    markAsRead(notification.id);
+    router.push(notification.link);
+  }
+}
+
+function openSettings() {
+  showSettings.value = true;
+}
+
+function updateSettings() {
+  // This is called whenever a setting is changed
+  // We don't save immediately to allow for multiple changes
+}
+
+function saveSettings() {
+  notificationStore.updateSettings(settings.value);
+  showSettings.value = false;
+}
+
+function formatDate(timestamp) {
+  const date = new Date(timestamp);
+  return date.toLocaleDateString('en-US', { 
+    year: 'numeric', 
+    month: 'short', 
+    day: 'numeric' 
+  });
+}
+
+function formatTimeAgo(timestamp) {
+  const now = new Date();
+  const date = new Date(timestamp);
+  const seconds = Math.floor((now - date) / 1000);
+  
+  let interval = Math.floor(seconds / 31536000);
+  if (interval >= 1) {
+    return interval === 1 ? '1 year ago' : `${interval} years ago`;
+  }
+  
+  interval = Math.floor(seconds / 2592000);
+  if (interval >= 1) {
+    return interval === 1 ? '1 month ago' : `${interval} months ago`;
+  }
+  
+  interval = Math.floor(seconds / 86400);
+  if (interval >= 1) {
+    return interval === 1 ? '1 day ago' : `${interval} days ago`;
+  }
+  
+  interval = Math.floor(seconds / 3600);
+  if (interval >= 1) {
+    return interval === 1 ? '1 hour ago' : `${interval} hours ago`;
+  }
+  
+  interval = Math.floor(seconds / 60);
+  if (interval >= 1) {
+    return interval === 1 ? '1 minute ago' : `${interval} minutes ago`;
+  }
+  
+  return 'Just now';
+}
+
+function getCategoryColor(category) {
+  const colors = {
+    members: 'bg-blue-500',
+    events: 'bg-purple-500',
+    groups: 'bg-green-500',
+    donations: 'bg-yellow-500',
+    system: 'bg-neutral-500'
+  };
+  
+  return colors[category] || 'bg-primary-500';
+}
+
+function getCategoryBadgeClass(category) {
+  const classes = {
+    members: 'bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-300',
+    events: 'bg-purple-100 text-purple-800 dark:bg-purple-900 dark:text-purple-300',
+    groups: 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-300',
+    donations: 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-300',
+    system: 'bg-neutral-100 text-neutral-800 dark:bg-neutral-900 dark:text-neutral-300'
+  };
+  
+  return classes[category] || 'bg-primary-100 text-primary-800 dark:bg-primary-900 dark:text-primary-300';
+}
+
+function getCategoryName(category) {
+  const names = {
+    members: 'Member',
+    events: 'Event',
+    groups: 'Group',
+    donations: 'Donation',
+    system: 'System'
+  };
+  
+  return names[category] || 'Notification';
+}
+
+function getEmptyStateMessage() {
+  if (filters.value.status === 'unread') {
+    return 'You have no unread notifications.';
+  } else if (filters.value.status === 'read') {
+    return 'You have no read notifications.';
+  } else if (filters.value.category !== 'all') {
+    return `You have no ${filters.value.category} notifications.`;
+  } else if (filters.value.search) {
+    return `No notifications match your search for "${filters.value.search}".`;
+  } else {
+    return 'You have no notifications yet. Notifications will appear here when there are updates or activities in the system.';
+  }
+}
+
+function prevPage() {
+  if (currentPage.value > 1) {
+    currentPage.value--;
+  }
+}
+
+function nextPage() {
+  if (currentPage.value < totalPages.value) {
+    currentPage.value++;
+  }
+}
+
+function goToPage(page) {
+  currentPage.value = page;
+}
+
+// Reset pagination when filters change
+watch(filters, () => {
+  currentPage.value = 1;
+}, { deep: true });
+
+// Watch for changes to notification settings
+watch(() => notificationStore.settings, (newSettings) => {
+  settings.value = { ...newSettings };
+}, { deep: true });
+
+// Initialize the page
+onMounted(() => {
+  // Add sample notifications for demo purposes
+  if (notificationStore.notifications.length === 0) {
+    addSampleNotifications();
+  }
+});
+
+// Function to add sample notifications for demonstration
+function addSampleNotifications() {
+  const now = new Date();
+  const yesterday = new Date(now);
+  yesterday.setDate(yesterday.getDate() - 1);
+  const lastWeek = new Date(now);
+  lastWeek.setDate(lastWeek.getDate() - 7);
+  
+  const sampleNotifications = [
+    {
+      title: 'New Member Registration',
+      message: 'John Smith has registered as a new member.',
+      category: 'members',
+      timestamp: now.toISOString(),
+      read: false,
+      link: '/members/1'
+    },
+    {
+      title: 'Upcoming Event',
+      message: 'Sunday Service will start at 10:00 AM tomorrow.',
+      category: 'events',
+      timestamp: yesterday.toISOString(),
+      read: true,
+      link: '/events/1'
+    },
+    {
+      title: 'Donation Received',
+      message: 'A donation of $500 has been received for the Building Fund.',
+      category: 'donations',
+      timestamp: yesterday.toISOString(),
+      read: false,
+      link: '/donations/1'
+    },
+    {
+      title: 'Group Meeting Changed',
+      message: 'Youth Group meeting has been rescheduled to Friday at 7:00 PM.',
+      category: 'groups',
+      timestamp: lastWeek.toISOString(),
+      read: true,
+      link: '/groups/1'
+    },
+    {
+      title: 'System Update',
+      message: 'The church management system has been updated to version 2.0.',
+      category: 'system',
+      timestamp: lastWeek.toISOString(),
+      read: false
+    }
+  ];
+  
+  sampleNotifications.forEach(notification => {
+    notificationService.send(notification);
+  });
+}
+</script>

@@ -1,0 +1,517 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Church Management System - Search Test</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+</head>
+<body class="bg-gray-100">
+    <div class="container mx-auto px-4 py-8">
+        <h1 class="text-3xl font-bold mb-6 text-center text-blue-700">Church Management System</h1>
+        <h2 class="text-2xl font-semibold mb-4 text-center">Multi-Language Search Demo</h2>
+        
+        <!-- Language Selector -->
+        <div class="mb-6 flex justify-center">
+            <div class="inline-flex rounded-md shadow-sm" role="group">
+                <button type="button" class="language-btn px-4 py-2 text-sm font-medium text-blue-700 bg-white border border-gray-200 rounded-l-lg hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-2 focus:ring-blue-700 focus:text-blue-700" data-lang="en">
+                    🇺🇸 English
+                </button>
+                <button type="button" class="language-btn px-4 py-2 text-sm font-medium text-gray-900 bg-white border-t border-b border-gray-200 hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-2 focus:ring-blue-700 focus:text-blue-700" data-lang="es">
+                    🇪🇸 Español
+                </button>
+                <button type="button" class="language-btn px-4 py-2 text-sm font-medium text-gray-900 bg-white border-t border-b border-gray-200 hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-2 focus:ring-blue-700 focus:text-blue-700" data-lang="fr">
+                    🇫🇷 Français
+                </button>
+                <button type="button" class="language-btn px-4 py-2 text-sm font-medium text-gray-900 bg-white border-t border-b border-gray-200 hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-2 focus:ring-blue-700 focus:text-blue-700" data-lang="de">
+                    🇩🇪 Deutsch
+                </button>
+                <button type="button" class="language-btn px-4 py-2 text-sm font-medium text-gray-900 bg-white border-t border-b border-gray-200 hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-2 focus:ring-blue-700 focus:text-blue-700" data-lang="pt">
+                    🇵🇹 Português
+                </button>
+                <button type="button" class="language-btn px-4 py-2 text-sm font-medium text-gray-900 bg-white border border-gray-200 rounded-r-md hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-2 focus:ring-blue-700 focus:text-blue-700" data-lang="zh">
+                    🇨🇳 中文
+                </button>
+            </div>
+        </div>
+        
+        <!-- Search Bar -->
+        <div class="max-w-3xl mx-auto mb-8">
+            <div class="relative">
+                <div class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
+                    <i class="fas fa-search text-gray-400"></i>
+                </div>
+                <input type="search" id="search-input" class="block w-full p-4 pl-10 text-sm text-gray-900 border border-gray-300 rounded-lg bg-white focus:ring-blue-500 focus:border-blue-500" placeholder="Search for members, donations, events..." required>
+                <button id="search-button" class="text-white absolute right-2.5 bottom-2.5 bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-4 py-2">Search</button>
+            </div>
+        </div>
+        
+        <div class="flex flex-col md:flex-row gap-6">
+            <!-- Filters Section -->
+            <div class="w-full md:w-1/4 bg-white p-4 rounded-lg shadow-md">
+                <h3 class="text-lg font-semibold mb-4" id="filters-title">Filters</h3>
+                
+                <!-- Type Filter -->
+                <div class="mb-4">
+                    <label class="block text-sm font-medium text-gray-700 mb-2" id="type-label">Type</label>
+                    <select id="type-filter" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5">
+                        <option value="all" selected id="all-option">All</option>
+                        <option value="members" id="members-option">Members</option>
+                        <option value="donations" id="donations-option">Donations</option>
+                        <option value="events" id="events-option">Events</option>
+                        <option value="attendance" id="attendance-option">Attendance</option>
+                    </select>
+                </div>
+                
+                <!-- Date Range -->
+                <div class="mb-4">
+                    <label class="block text-sm font-medium text-gray-700 mb-2" id="date-range-label">Date Range</label>
+                    <div class="grid grid-cols-2 gap-2">
+                        <div>
+                            <label class="block text-xs text-gray-500 mb-1" id="date-from-label">From</label>
+                            <input type="date" id="date-from" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2">
+                        </div>
+                        <div>
+                            <label class="block text-xs text-gray-500 mb-1" id="date-to-label">To</label>
+                            <input type="date" id="date-to" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2">
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Categories -->
+                <div class="mb-4">
+                    <label class="block text-sm font-medium text-gray-700 mb-2" id="categories-label">Categories</label>
+                    <div class="space-y-2">
+                        <div class="flex items-center">
+                            <input id="category-1" type="checkbox" value="worship" class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500">
+                            <label for="category-1" class="ml-2 text-sm font-medium text-gray-900" id="category-1-label">Worship</label>
+                        </div>
+                        <div class="flex items-center">
+                            <input id="category-2" type="checkbox" value="youth" class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500">
+                            <label for="category-2" class="ml-2 text-sm font-medium text-gray-900" id="category-2-label">Youth</label>
+                        </div>
+                        <div class="flex items-center">
+                            <input id="category-3" type="checkbox" value="outreach" class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500">
+                            <label for="category-3" class="ml-2 text-sm font-medium text-gray-900" id="category-3-label">Outreach</label>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Apply Filters Button -->
+                <button id="apply-filters" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-4 rounded-lg">Apply Filters</button>
+                <button id="reset-filters" class="w-full bg-gray-200 hover:bg-gray-300 text-gray-800 font-medium py-2 px-4 rounded-lg mt-2">Reset Filters</button>
+            </div>
+            
+            <!-- Results Section -->
+            <div class="w-full md:w-3/4 bg-white p-4 rounded-lg shadow-md">
+                <div class="flex justify-between items-center mb-4">
+                    <h3 class="text-lg font-semibold" id="results-title">Search Results</h3>
+                    <div class="flex items-center">
+                        <label class="block text-sm font-medium text-gray-700 mr-2" id="sort-label">Sort by:</label>
+                        <select id="sort-select" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 p-2">
+                            <option value="relevance" id="relevance-option">Relevance</option>
+                            <option value="date_desc" id="newest-option">Newest first</option>
+                            <option value="date_asc" id="oldest-option">Oldest first</option>
+                            <option value="name_asc" id="name-az-option">Name (A-Z)</option>
+                            <option value="name_desc" id="name-za-option">Name (Z-A)</option>
+                        </select>
+                    </div>
+                </div>
+                
+                <!-- Sample Results -->
+                <div id="search-results" class="space-y-4">
+                    <!-- Member Result -->
+                    <div class="flex p-4 bg-white border rounded-lg shadow-sm hover:shadow-md transition-shadow">
+                        <div class="flex items-center justify-center w-12 h-12 bg-blue-100 rounded-lg mr-4">
+                            <i class="fas fa-user text-blue-600"></i>
+                        </div>
+                        <div class="flex-1">
+                            <div class="font-semibold">John Smith</div>
+                            <div class="text-sm text-gray-600">john.smith@example.com</div>
+                            <div class="mt-2 text-xs text-gray-500">
+                                <span class="bg-green-100 text-green-800 text-xs font-medium px-2 py-0.5 rounded">Active</span>
+                                <span class="ml-2">Member since: Jan 15, 2023</span>
+                            </div>
+                        </div>
+                        <div class="text-right text-xs text-gray-500">
+                            <div>Member</div>
+                            <div class="mt-1">ID: 12345</div>
+                        </div>
+                    </div>
+                    
+                    <!-- Donation Result -->
+                    <div class="flex p-4 bg-white border rounded-lg shadow-sm hover:shadow-md transition-shadow">
+                        <div class="flex items-center justify-center w-12 h-12 bg-green-100 rounded-lg mr-4">
+                            <i class="fas fa-hand-holding-usd text-green-600"></i>
+                        </div>
+                        <div class="flex-1">
+                            <div class="font-semibold">$250.00 - Building Fund</div>
+                            <div class="text-sm text-gray-600">Donated by: Maria Garcia</div>
+                            <div class="mt-2 text-xs text-gray-500">
+                                <span class="bg-blue-100 text-blue-800 text-xs font-medium px-2 py-0.5 rounded">Completed</span>
+                                <span class="ml-2">Method: Credit Card</span>
+                            </div>
+                        </div>
+                        <div class="text-right text-xs text-gray-500">
+                            <div>Donation</div>
+                            <div class="mt-1">Mar 10, 2025</div>
+                        </div>
+                    </div>
+                    
+                    <!-- Event Result -->
+                    <div class="flex p-4 bg-white border rounded-lg shadow-sm hover:shadow-md transition-shadow">
+                        <div class="flex items-center justify-center w-12 h-12 bg-yellow-100 rounded-lg mr-4">
+                            <i class="fas fa-calendar-alt text-yellow-600"></i>
+                        </div>
+                        <div class="flex-1">
+                            <div class="font-semibold">Easter Sunday Service</div>
+                            <div class="text-sm text-gray-600">Main Sanctuary</div>
+                            <div class="mt-2 text-xs text-gray-500">
+                                <span class="bg-yellow-100 text-yellow-800 text-xs font-medium px-2 py-0.5 rounded">Upcoming</span>
+                                <span class="ml-2">Expected Attendance: 350</span>
+                            </div>
+                        </div>
+                        <div class="text-right text-xs text-gray-500">
+                            <div>Event</div>
+                            <div class="mt-1">Apr 4, 2025</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Pagination -->
+                <div class="flex justify-between items-center mt-6">
+                    <button id="prev-page" class="flex items-center px-4 py-2 text-sm font-medium text-gray-500 bg-white border border-gray-300 rounded-lg hover:bg-gray-100">
+                        <i class="fas fa-chevron-left mr-2"></i>
+                        <span id="previous-label">Previous</span>
+                    </button>
+                    <span class="text-sm text-gray-700">
+                        <span id="page-label">Page</span> <span class="font-medium">1</span> <span id="of-label">of</span> <span class="font-medium">10</span>
+                    </span>
+                    <button id="next-page" class="flex items-center px-4 py-2 text-sm font-medium text-gray-500 bg-white border border-gray-300 rounded-lg hover:bg-gray-100">
+                        <span id="next-label">Next</span>
+                        <i class="fas fa-chevron-right ml-2"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        // Translations
+        const translations = {
+            en: {
+                search: "Search",
+                searchPlaceholder: "Search for members, donations, events...",
+                filters: "Filters",
+                type: "Type",
+                all: "All",
+                members: "Members",
+                donations: "Donations",
+                events: "Events",
+                attendance: "Attendance",
+                dateRange: "Date Range",
+                from: "From",
+                to: "To",
+                categories: "Categories",
+                worship: "Worship",
+                youth: "Youth",
+                outreach: "Outreach",
+                applyFilters: "Apply Filters",
+                resetFilters: "Reset Filters",
+                results: "Search Results",
+                sortBy: "Sort by",
+                relevance: "Relevance",
+                newest: "Newest first",
+                oldest: "Oldest first",
+                nameAZ: "Name (A-Z)",
+                nameZA: "Name (Z-A)",
+                previous: "Previous",
+                next: "Next",
+                page: "Page",
+                of: "of"
+            },
+            es: {
+                search: "Buscar",
+                searchPlaceholder: "Buscar miembros, donaciones, eventos...",
+                filters: "Filtros",
+                type: "Tipo",
+                all: "Todo",
+                members: "Miembros",
+                donations: "Donaciones",
+                events: "Eventos",
+                attendance: "Asistencia",
+                dateRange: "Rango de fechas",
+                from: "Desde",
+                to: "Hasta",
+                categories: "Categorías",
+                worship: "Adoración",
+                youth: "Jóvenes",
+                outreach: "Alcance",
+                applyFilters: "Aplicar filtros",
+                resetFilters: "Restablecer filtros",
+                results: "Resultados de búsqueda",
+                sortBy: "Ordenar por",
+                relevance: "Relevancia",
+                newest: "Más recientes primero",
+                oldest: "Más antiguos primero",
+                nameAZ: "Nombre (A-Z)",
+                nameZA: "Nombre (Z-A)",
+                previous: "Anterior",
+                next: "Siguiente",
+                page: "Página",
+                of: "de"
+            },
+            fr: {
+                search: "Rechercher",
+                searchPlaceholder: "Rechercher des membres, dons, événements...",
+                filters: "Filtres",
+                type: "Type",
+                all: "Tous",
+                members: "Membres",
+                donations: "Dons",
+                events: "Événements",
+                attendance: "Présence",
+                dateRange: "Plage de dates",
+                from: "De",
+                to: "À",
+                categories: "Catégories",
+                worship: "Culte",
+                youth: "Jeunesse",
+                outreach: "Sensibilisation",
+                applyFilters: "Appliquer les filtres",
+                resetFilters: "Réinitialiser les filtres",
+                results: "Résultats de recherche",
+                sortBy: "Trier par",
+                relevance: "Pertinence",
+                newest: "Plus récents d'abord",
+                oldest: "Plus anciens d'abord",
+                nameAZ: "Nom (A-Z)",
+                nameZA: "Nom (Z-A)",
+                previous: "Précédent",
+                next: "Suivant",
+                page: "Page",
+                of: "de"
+            },
+            de: {
+                search: "Suchen",
+                searchPlaceholder: "Suche nach Mitgliedern, Spenden, Veranstaltungen...",
+                filters: "Filter",
+                type: "Typ",
+                all: "Alle",
+                members: "Mitglieder",
+                donations: "Spenden",
+                events: "Veranstaltungen",
+                attendance: "Anwesenheit",
+                dateRange: "Datumsbereich",
+                from: "Von",
+                to: "Bis",
+                categories: "Kategorien",
+                worship: "Gottesdienst",
+                youth: "Jugend",
+                outreach: "Öffentlichkeitsarbeit",
+                applyFilters: "Filter anwenden",
+                resetFilters: "Filter zurücksetzen",
+                results: "Suchergebnisse",
+                sortBy: "Sortieren nach",
+                relevance: "Relevanz",
+                newest: "Neueste zuerst",
+                oldest: "Älteste zuerst",
+                nameAZ: "Name (A-Z)",
+                nameZA: "Name (Z-A)",
+                previous: "Zurück",
+                next: "Weiter",
+                page: "Seite",
+                of: "von"
+            },
+            pt: {
+                search: "Pesquisar",
+                searchPlaceholder: "Pesquisar membros, doações, eventos...",
+                filters: "Filtros",
+                type: "Tipo",
+                all: "Todos",
+                members: "Membros",
+                donations: "Doações",
+                events: "Eventos",
+                attendance: "Presença",
+                dateRange: "Intervalo de datas",
+                from: "De",
+                to: "Até",
+                categories: "Categorias",
+                worship: "Adoração",
+                youth: "Juventude",
+                outreach: "Divulgação",
+                applyFilters: "Aplicar filtros",
+                resetFilters: "Redefinir filtros",
+                results: "Resultados da pesquisa",
+                sortBy: "Ordenar por",
+                relevance: "Relevância",
+                newest: "Mais recentes primeiro",
+                oldest: "Mais antigos primeiro",
+                nameAZ: "Nome (A-Z)",
+                nameZA: "Nome (Z-A)",
+                previous: "Anterior",
+                next: "Próximo",
+                page: "Página",
+                of: "de"
+            },
+            zh: {
+                search: "搜索",
+                searchPlaceholder: "搜索成员、捐赠、活动...",
+                filters: "筛选",
+                type: "类型",
+                all: "全部",
+                members: "成员",
+                donations: "捐赠",
+                events: "活动",
+                attendance: "出席",
+                dateRange: "日期范围",
+                from: "从",
+                to: "至",
+                categories: "类别",
+                worship: "崇拜",
+                youth: "青年",
+                outreach: "外展",
+                applyFilters: "应用筛选",
+                resetFilters: "重置筛选",
+                results: "搜索结果",
+                sortBy: "排序方式",
+                relevance: "相关性",
+                newest: "最新优先",
+                oldest: "最旧优先",
+                nameAZ: "名称 (A-Z)",
+                nameZA: "名称 (Z-A)",
+                previous: "上一页",
+                next: "下一页",
+                page: "页",
+                of: "/"
+            }
+        };
+        
+        // Current language
+        let currentLang = 'en';
+        
+        // Function to update UI text based on selected language
+        function updateUIText() {
+            const lang = translations[currentLang];
+            
+            // Update search elements
+            document.getElementById('search-button').textContent = lang.search;
+            document.getElementById('search-input').placeholder = lang.searchPlaceholder;
+            
+            // Update filter elements
+            document.getElementById('filters-title').textContent = lang.filters;
+            document.getElementById('type-label').textContent = lang.type;
+            document.getElementById('all-option').textContent = lang.all;
+            document.getElementById('members-option').textContent = lang.members;
+            document.getElementById('donations-option').textContent = lang.donations;
+            document.getElementById('events-option').textContent = lang.events;
+            document.getElementById('attendance-option').textContent = lang.attendance;
+            
+            document.getElementById('date-range-label').textContent = lang.dateRange;
+            document.getElementById('date-from-label').textContent = lang.from;
+            document.getElementById('date-to-label').textContent = lang.to;
+            
+            document.getElementById('categories-label').textContent = lang.categories;
+            document.getElementById('category-1-label').textContent = lang.worship;
+            document.getElementById('category-2-label').textContent = lang.youth;
+            document.getElementById('category-3-label').textContent = lang.outreach;
+            
+            document.getElementById('apply-filters').textContent = lang.applyFilters;
+            document.getElementById('reset-filters').textContent = lang.resetFilters;
+            
+            // Update results elements
+            document.getElementById('results-title').textContent = lang.results;
+            document.getElementById('sort-label').textContent = lang.sortBy + ':';
+            document.getElementById('relevance-option').textContent = lang.relevance;
+            document.getElementById('newest-option').textContent = lang.newest;
+            document.getElementById('oldest-option').textContent = lang.oldest;
+            document.getElementById('name-az-option').textContent = lang.nameAZ;
+            document.getElementById('name-za-option').textContent = lang.nameZA;
+            
+            // Update pagination
+            document.getElementById('previous-label').textContent = lang.previous;
+            document.getElementById('next-label').textContent = lang.next;
+            document.getElementById('page-label').textContent = lang.page;
+            document.getElementById('of-label').textContent = lang.of;
+        }
+        
+        // Initialize UI with default language
+        updateUIText();
+        
+        // Language selection
+        document.querySelectorAll('.language-btn').forEach(btn => {
+            btn.addEventListener('click', function() {
+                // Update active language
+                currentLang = this.getAttribute('data-lang');
+                
+                // Update UI
+                updateUIText();
+                
+                // Update active button styling
+                document.querySelectorAll('.language-btn').forEach(b => {
+                    if (b === this) {
+                        b.classList.add('text-blue-700');
+                        b.classList.remove('text-gray-900');
+                    } else {
+                        b.classList.remove('text-blue-700');
+                        b.classList.add('text-gray-900');
+                    }
+                });
+            });
+        });
+        
+        // Set English as active by default
+        document.querySelector('[data-lang="en"]').classList.add('text-blue-700');
+        document.querySelector('[data-lang="en"]').classList.remove('text-gray-900');
+        
+        // Search functionality (demo only)
+        document.getElementById('search-button').addEventListener('click', function() {
+            const searchTerm = document.getElementById('search-input').value.trim();
+            if (searchTerm) {
+                alert(`Search performed for: "${searchTerm}" in language: ${currentLang}`);
+            }
+        });
+        
+        // Filter application (demo only)
+        document.getElementById('apply-filters').addEventListener('click', function() {
+            const type = document.getElementById('type-filter').value;
+            const dateFrom = document.getElementById('date-from').value;
+            const dateTo = document.getElementById('date-to').value;
+            
+            const categories = [];
+            if (document.getElementById('category-1').checked) categories.push('worship');
+            if (document.getElementById('category-2').checked) categories.push('youth');
+            if (document.getElementById('category-3').checked) categories.push('outreach');
+            
+            alert(`Filters applied:\nType: ${type}\nDate Range: ${dateFrom} to ${dateTo}\nCategories: ${categories.join(', ')}`);
+        });
+        
+        // Reset filters (demo only)
+        document.getElementById('reset-filters').addEventListener('click', function() {
+            document.getElementById('type-filter').value = 'all';
+            document.getElementById('date-from').value = '';
+            document.getElementById('date-to').value = '';
+            document.getElementById('category-1').checked = false;
+            document.getElementById('category-2').checked = false;
+            document.getElementById('category-3').checked = false;
+            
+            alert('Filters reset');
+        });
+        
+        // Sorting (demo only)
+        document.getElementById('sort-select').addEventListener('change', function() {
+            alert(`Results sorted by: ${this.value}`);
+        });
+        
+        // Pagination (demo only)
+        document.getElementById('prev-page').addEventListener('click', function() {
+            alert('Previous page');
+        });
+        
+        document.getElementById('next-page').addEventListener('click', function() {
+            alert('Next page');
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,138 @@
+/**
+ * Theme-related styles for Church Management System
+ * This file contains CSS for theme customization, font sizes, and accessibility
+ */
+
+:root {
+  /* Default theme colors (light) */
+  --color-primary-50: #f0f9ff;
+  --color-primary-100: #e0f2fe;
+  --color-primary-200: #bae6fd;
+  --color-primary-300: #7dd3fc;
+  --color-primary-400: #38bdf8;
+  --color-primary-500: #0ea5e9;
+  --color-primary-600: #0284c7;
+  --color-primary-700: #0369a1;
+  --color-primary-800: #075985;
+  --color-primary-900: #0c4a6e;
+
+  --color-secondary-50: #faf5ff;
+  --color-secondary-100: #f3e8ff;
+  --color-secondary-200: #e9d5ff;
+  --color-secondary-300: #d8b4fe;
+  --color-secondary-400: #c084fc;
+  --color-secondary-500: #a855f7;
+  --color-secondary-600: #9333ea;
+  --color-secondary-700: #7e22ce;
+  --color-secondary-800: #6b21a8;
+  --color-secondary-900: #581c87;
+
+  /* Status colors */
+  --color-success: #10b981;
+  --color-error: #ef4444;
+  --color-warning: #f59e0b;
+  --color-info: #3b82f6;
+
+  /* Font sizes */
+  --font-size-base: 1rem;
+  --line-height-base: 1.5;
+  
+  /* Transitions */
+  --transition-speed: 0.3s;
+}
+
+/* Dark mode overrides */
+.dark {
+  --color-primary-50: #0c4a6e;
+  --color-primary-100: #075985;
+  --color-primary-200: #0369a1;
+  --color-primary-300: #0284c7;
+  --color-primary-400: #0ea5e9;
+  --color-primary-500: #38bdf8;
+  --color-primary-600: #7dd3fc;
+  --color-primary-700: #bae6fd;
+  --color-primary-800: #e0f2fe;
+  --color-primary-900: #f0f9ff;
+
+  --color-secondary-50: #581c87;
+  --color-secondary-100: #6b21a8;
+  --color-secondary-200: #7e22ce;
+  --color-secondary-300: #9333ea;
+  --color-secondary-400: #a855f7;
+  --color-secondary-500: #c084fc;
+  --color-secondary-600: #d8b4fe;
+  --color-secondary-700: #e9d5ff;
+  --color-secondary-800: #f3e8ff;
+  --color-secondary-900: #faf5ff;
+}
+
+/* High contrast mode */
+.high-contrast {
+  --color-primary-50: #f8fafc;
+  --color-primary-100: #f1f5f9;
+  --color-primary-200: #e2e8f0;
+  --color-primary-300: #cbd5e1;
+  --color-primary-400: #94a3b8;
+  --color-primary-500: #64748b;
+  --color-primary-600: #475569;
+  --color-primary-700: #334155;
+  --color-primary-800: #1e293b;
+  --color-primary-900: #0f172a;
+
+  --color-secondary-50: #fef2f2;
+  --color-secondary-100: #fee2e2;
+  --color-secondary-200: #fecaca;
+  --color-secondary-300: #fca5a5;
+  --color-secondary-400: #f87171;
+  --color-secondary-500: #ef4444;
+  --color-secondary-600: #dc2626;
+  --color-secondary-700: #b91c1c;
+  --color-secondary-800: #991b1b;
+  --color-secondary-900: #7f1d1d;
+  
+  --color-success: #15803d;
+  --color-error: #b91c1c;
+  --color-warning: #b45309;
+  --color-info: #1e40af;
+}
+
+/* Font size adjustments */
+.text-size-small {
+  --font-size-base: 0.875rem;
+}
+
+.text-size-medium {
+  --font-size-base: 1rem;
+}
+
+.text-size-large {
+  --font-size-base: 1.125rem;
+}
+
+/* Apply font size to elements */
+body {
+  font-size: var(--font-size-base);
+  line-height: var(--line-height-base);
+}
+
+/* Reduced motion for accessibility */
+.reduced-motion * {
+  transition-duration: 0.001ms !important;
+  animation-duration: 0.001ms !important;
+  animation-iteration-count: 1 !important;
+}
+
+/* Seasonal theme indicators */
+.seasonal-theme-indicator {
+  position: fixed;
+  bottom: 1rem;
+  right: 1rem;
+  font-size: 1.5rem;
+  z-index: 50;
+  opacity: 0.7;
+  transition: opacity var(--transition-speed);
+}
+
+.seasonal-theme-indicator:hover {
+  opacity: 1;
+}

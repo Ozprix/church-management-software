@@ -1,0 +1,21 @@
+{
+  "app_name": "Church Management System",
+  "environment": "production",
+  "php_path": "php",
+  "composer_path": "composer",
+  "npm_path": "npm",
+  "node_path": "node",
+  "deploy_tasks": [
+    "install_php_dependencies",
+    "install_node_dependencies",
+    "build_assets",
+    "generate_key",
+    "cache_configuration",
+    "run_migrations",
+    "set_permissions"
+  ],
+  "post_deploy_commands": [
+    "php artisan storage:link",
+    "php artisan optimize"
+  ]
+}
