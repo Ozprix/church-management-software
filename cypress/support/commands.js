@@ -139,3 +139,30 @@ Cypress.Commands.add('checkExportOptions', () => {
   cy.get('.export-options').should('be.visible')
   cy.get('select[name="export_format"]').should('exist')
 })
+
+// Custom command for login as admin with session
+Cypress.Commands.add('loginAsAdmin', () => {
+  cy.session('admin', () => {
+    cy.visit('/login');
+    cy.get('#email').type('admin@church.com');
+    cy.get('#password').type('password');
+    cy.get('button[type="submit"]').click();
+    cy.url().should('include', '/dashboard');
+  });
+});
+
+// Custom command for login as specific user
+Cypress.Commands.add('loginAsUser', (email, password) => {
+  cy.session(email, () => {
+    cy.visit('/login');
+    cy.get('#email').type(email);
+    cy.get('#password').type(password);
+    cy.get('button[type="submit"]').click();
+    cy.url().should('include', '/dashboard');
+  });
+});
+
+// Custom command for waiting for debounce
+Cypress.Commands.add('waitForDebounce', (ms = 300) => {
+  cy.wait(ms);
+});
