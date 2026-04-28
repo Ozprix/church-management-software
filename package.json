@@ -63,5 +63,16 @@
         "vue-chartjs": "^5.3.2",
         "vue-router": "^4.5.1",
         "vue-toastification": "^2.0.0-rc.5"
-    }
+    },
+    "name": "workspace",
+    "version": "1.0.0",
+    "description": "![Church Management System Logo](public/images/logo.png)",
+    "main": ".eslintrc.js",
+    "directories": {
+        "doc": "docs",
+        "test": "tests"
+    },
+    "keywords": [],
+    "author": "",
+    "license": "ISC"
 }

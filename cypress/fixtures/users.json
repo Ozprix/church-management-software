@@ -1,0 +1,12 @@
+{
+  "admin": {
+    "email": "admin@church.com",
+    "password": "password",
+    "role": "admin"
+  },
+  "member": {
+    "email": "member@church.com",
+    "password": "password",
+    "role": "member"
+  }
+}
